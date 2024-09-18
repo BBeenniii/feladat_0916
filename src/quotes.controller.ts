@@ -22,4 +22,11 @@ export class QuotesController {
       author: quote.author,
     };
   }
+
+  @Get('topAuthors')
+  @Render('topAuthors') 
+  getTopAuthors() {
+    const topAuthors = this.quotesService.getTopAuthors();
+    return { topAuthors };
+  }
 }
