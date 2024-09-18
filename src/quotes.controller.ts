@@ -1,6 +1,7 @@
-import { Controller, Get, Render, NotFoundException, Param } from '@nestjs/common';
+import { Controller, Get, Param, Render, NotFoundException, Delete, Res } from '@nestjs/common';
 const quotesData = require('./quotes.json'); 
 import { QuotesService } from './quotes.service';
+import { Response } from 'express';
 
 @Controller()
 export class QuotesController {
@@ -31,7 +32,7 @@ export class QuotesController {
   }
 
   @Get('quotes/:id')
-  @Render('quote')  // Az új EJS sablon neve
+  @Render('quote') 
   async getQuoteById(@Param('id') id: string) {
     const quoteId = parseInt(id, 10);
     if (isNaN(quoteId)) {
@@ -42,5 +43,21 @@ export class QuotesController {
       quote: quote.quote,
       author: quote.author,
     };
+  }
+
+  @Delete('deleteQuote/:id')
+  @Render('deleteQuote')
+  async deleteQuoteById(@Param('id') id: string) {
+    const quoteId = parseInt(id, 10);
+    if (isNaN(quoteId)) {
+      return { message: 'Invalid ID format' };
+    }
+  
+    const success = this.quotesService.deleteQuoteById(quoteId);
+    if (success) {
+      return { message: 'Sikeres törlés' };
+    } else {
+      return { message: 'Ismeretlen idézet' };
+    }
   }
 }

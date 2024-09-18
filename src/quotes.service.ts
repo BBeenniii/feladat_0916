@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 const quotesData = require('./quotes.json'); 
+import { writeFileSync } from 'fs';
 
 @Injectable()
 export class QuotesService {
@@ -36,5 +37,16 @@ export class QuotesService {
       throw new NotFoundException(`Quote with id ${id} not found`);
     }
     return quote;
+  }
+
+  deleteQuoteById(id: number) {
+    const index = quotesData.quotes.findIndex(q => q.id === id);
+    if (index === -1) {
+      return false;
+    }
+    quotesData.quotes.splice(index, 1);
+
+    writeFileSync(quotesData.quotesFile, JSON.stringify({ quotes: quotesData.quotes }, null, 2));
+    return true;
   }
 }
