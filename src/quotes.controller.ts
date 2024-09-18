@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, NotFoundException, Param } from '@nestjs/common';
 const quotesData = require('./quotes.json'); 
 import { QuotesService } from './quotes.service';
 
@@ -28,5 +28,19 @@ export class QuotesController {
   getTopAuthors() {
     const topAuthors = this.quotesService.getTopAuthors();
     return { topAuthors };
+  }
+
+  @Get('quotes/:id')
+  @Render('quote')  // Az új EJS sablon neve
+  async getQuoteById(@Param('id') id: string) {
+    const quoteId = parseInt(id, 10);
+    if (isNaN(quoteId)) {
+      throw new NotFoundException('Invalid ID format');
+    }
+    const quote = await this.quotesService.getQuoteById(quoteId);
+    return {
+      quote: quote.quote,
+      author: quote.author,
+    };
   }
 }

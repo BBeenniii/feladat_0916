@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 const quotesData = require('./quotes.json'); 
 
 @Injectable()
@@ -23,11 +23,18 @@ export class QuotesService {
       }
     });
 
-    // Konvertálás tömbbé, majd rendezés csökkenő sorrendben
     const sortedAuthors = Object.entries(authorCounts)
       .map(([author, count]) => ({ author, count }))
       .sort((a, b) => b.count - a.count);
 
     return sortedAuthors;
+  }
+
+  getQuoteById(id: number) {
+    const quote = quotesData.quotes.find(q => q.id === id);
+    if (!quote) {
+      throw new NotFoundException(`Quote with id ${id} not found`);
+    }
+    return quote;
   }
 }
