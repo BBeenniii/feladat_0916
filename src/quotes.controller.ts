@@ -73,4 +73,25 @@ export class QuotesController {
     }
     return { quotes, message: '' };
   }
+
+  @Get('authorRandomForm')
+  @Render('authorRandomForm')
+  showAuthorRandomForm() {
+    return {}; 
+  }
+
+  @Get('authorRandom')
+  @Render('authorRandom')
+  getRandomQuoteByAuthor(@Query('author') author: string) {
+    if (!author) {
+      return { message: 'Kérlek, adj meg egy szerzőt!' };
+    }
+
+    const quote = this.quotesService.getRandomQuoteByAuthor(author);
+    if (quote) {
+      return { quote };
+    } else {
+      return { message: `Nem található idézet a következő szerzőtől: "${author}"` };
+    }
+  }
 }

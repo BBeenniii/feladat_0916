@@ -55,4 +55,17 @@ export class QuotesService {
       quote.quote.toLowerCase().includes(text.toLowerCase())
     );
   }
+
+  getRandomQuoteByAuthor(author: string) {
+    const authorQuotes = quotesData.quotes.filter(quote =>
+      quote.author.toLowerCase() === author.toLowerCase()
+    );
+    
+    if (authorQuotes.length === 0) {
+      return null;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * authorQuotes.length);
+    return authorQuotes[randomIndex];
+  }
 }
