@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Render, NotFoundException, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Param, Render, NotFoundException, Delete, Res, Query } from '@nestjs/common';
 const quotesData = require('./quotes.json'); 
 import { QuotesService } from './quotes.service';
 import { Response } from 'express';
@@ -50,7 +50,7 @@ export class QuotesController {
   async deleteQuoteById(@Param('id') id: string) {
     const quoteId = parseInt(id, 10);
     if (isNaN(quoteId)) {
-      return { message: 'Invalid ID format' };
+      return { message: 'Invalid ID formatum' };
     }
   
     const success = this.quotesService.deleteQuoteById(quoteId);
@@ -59,5 +59,18 @@ export class QuotesController {
     } else {
       return { message: 'Ismeretlen idézet' };
     }
+  }
+
+  @Get('search')
+  @Render('search')
+  searchQuotes(@Query('text') text: string) {
+    if (!text) {
+      return { quotes: [], message: 'Kérlek, adj meg egy keresett kifejezést!' };
+    }
+    const quotes = this.quotesService.searchQuotes(text);
+    if (quotes.length === 0) {
+      return { quotes: [], message: `Nem található idézet a következő kifejezéssel: "${text}"` };
+    }
+    return { quotes, message: '' };
   }
 }

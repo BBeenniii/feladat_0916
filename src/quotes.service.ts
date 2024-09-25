@@ -49,4 +49,10 @@ export class QuotesService {
     writeFileSync(quotesData.quotesFile, JSON.stringify({ quotes: quotesData.quotes }, null, 2));
     return true;
   }
+
+  searchQuotes(text: string) {
+    return quotesData.quotes.filter(quote =>
+      quote.quote.toLowerCase().includes(text.toLowerCase())
+    );
+  }
 }
